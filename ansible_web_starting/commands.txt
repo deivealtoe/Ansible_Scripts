@@ -1,0 +1,9 @@
+# Executando um comando no shell da VM usando o ansible. Fazendo login com a chave privada configurada na VM com Vagrant
+ansible wordpress -u vagrant --private-key .vagrant/machines/wordpress/virtualbox/private_key -i hosts -m shell -a 'echo Hello, World!'
+
+# Executa os comandos disponível no arquivo provisioning.yml. Fazendo login com usuário vagrant usando a chave privada configurada
+ansible-playbook provisioning.yml -u vagrant -i hosts --private-key ./ssh-keys/ansible_iac
+
+# Executa um arquivo playbook diferente. Neste arquivo há passos para fazer a instalação do php7.4
+ansible-playbook provisioning_install.yml -u vagrant -i hosts --private-key ./ssh-keys/ansible_iac
+
