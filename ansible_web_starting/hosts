@@ -1,2 +1,2 @@
 [wordpress]
-192.168.56.40
+192.168.56.40 ansible_user=vagrant ansible_ssh_private_key="/home/deive/Workspace/Ansible/ansible_web_starting/ssh-keys/ansible_iac"
