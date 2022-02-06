@@ -1,19 +1,6 @@
 ---
 - hosts: all
   tasks:
-    - name: 'Atualiza repositórios do SO'
-      apt:
-        update_cache: true
-        force_apt_get: yes
-        cache_valid_time: 3600
-      become: yes
-    
-    - name: 'Faz instalação dos pacotes necessários para o wordpress (LAMP)'
-      apt:
-        name: ['apache2', 'php', 'libapache2-mod-php', 'mariadb-server', 'mariadb-client', 'php-mysql', 'python3-pymysql']
-        state: latest
-      become: yes
-    
     - name: 'Atualiza senha do usuário root no mariadb'
       mysql_user:
         name: root
@@ -22,6 +9,7 @@
         password: 'superSecret03'
         priv: "*.*:ALL,GRANT"
         check_implicit_admin: true
+        state: present
       become: yes
     
     - name: 'Cria o banco de dados no MariaDB'
@@ -31,3 +19,12 @@
         name: wordpress_db
         state: present
       become: yes
+
+    - name: 'Cria usuário no mariadb para usar no wordpress'
+      mysql_user:
+        login_user: 'root'
+        login_password: 'superSecret03'
+        name: 'wordpress_user'
+        password: 'superSecret03'
+        priv: 'wordpress_db.*:ALL'
+        state: present
