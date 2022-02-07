@@ -1,1 +1,0 @@
-{"virtualbox":{"/ssh-keys":{"guestpath":"/ssh-keys","hostpath":"/home/deive/Workspace/Ansible/ansible_my_wordpress/ssh-keys","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/deive/Workspace/Ansible/ansible_my_wordpress","disabled":false,"__vagrantfile":true}}}
