@@ -1,2 +1,5 @@
-[my_wordpress]
+[my_wordpress_app]
 192.168.56.50 ansible_user=vagrant ansible_ssh_private_key_file=./ssh-keys/ic1459
+
+[my_wordpress_db]
+192.168.56.51 ansible_user=vagrant ansible_ssh_private_key_file=./ssh-keys/ic1459

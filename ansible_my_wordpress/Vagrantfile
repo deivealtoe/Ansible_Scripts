@@ -1,3 +1,5 @@
+# https://linuxconfig.org/ubuntu-20-04-wordpress-with-apache-installation
+
 $copy_ssh_key_to_authorized_keys = <<-SCRIPT
   echo COPYING SSH KEY TO AUTHORIZED KEYS...
   cat /ssh-keys/ic1459.pub >> .ssh/authorized_keys
@@ -11,13 +13,22 @@ Vagrant.configure("2") do |config|
     v.memory = 1024
     v.cpus = 2
   end
+  
+  config.vm.define "my_wordpress_db" do |db|
+    db.vm.network "private_network", ip: "192.168.56.51"
+    db.vm.hostname = "ic1459"
 
-  config.vm.define "my_wordpress" do |my|
-    my.vm.network "private_network", ip: "192.168.56.50"
-    my.vm.hostname = "ic1459"
+    db.vm.synced_folder "./ssh-keys", "/ssh-keys"
 
-    my.vm.synced_folder "./ssh-keys", "/ssh-keys"
+    db.vm.provision "shell", inline: $copy_ssh_key_to_authorized_keys
+  end
 
-    my.vm.provision "shell", inline: $copy_ssh_key_to_authorized_keys
+  config.vm.define "my_wordpress_app" do |app|
+    app.vm.network "private_network", ip: "192.168.56.50"
+    app.vm.hostname = "ic1459"
+
+    app.vm.synced_folder "./ssh-keys", "/ssh-keys"
+
+    app.vm.provision "shell", inline: $copy_ssh_key_to_authorized_keys
   end
 end
