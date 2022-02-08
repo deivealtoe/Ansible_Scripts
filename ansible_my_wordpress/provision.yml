@@ -1,0 +1,18 @@
+---
+- hosts: all
+  tasks:
+  - name: 'Atualiza repositórios e pacotes do SO'
+    apt:
+      force_apt_get: yes
+      update_cache: yes
+      upgrade: 'yes'
+    become: yes
+    
+- hosts: my_wordpress_db
+  roles:
+    - mysql
+
+- hosts: my_wordpress_app
+  roles:
+    - app
+    

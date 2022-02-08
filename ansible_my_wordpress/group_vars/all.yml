@@ -1,0 +1,10 @@
+---
+wordpress_db_root_password: 'superSecret03'
+wordpress_user_name: wordpress_user
+wordpress_user_password: 'superSecret03'
+wordpress_db_name: wordpress_db
+wordpress_installation_dir: '/var/www/wordpress'
+wordpress_app_ip: '192.168.56.50'
+wordpress_db_ip: '192.168.56.51'
+wordpress_tar_gz_file_path: '/var/www/wordpress.tar.gz'
+wordpress_url_download: 'https://wordpress.org/latest.tar.gz'

@@ -1,0 +1,7 @@
+---
+- name: 'Reinicia MariaDB'
+  service:
+    name: mysql
+    state: restarted
+  become: yes
+  

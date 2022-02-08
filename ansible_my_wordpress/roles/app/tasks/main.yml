@@ -1,0 +1,57 @@
+---
+- name: 'Faz instalação dos pacotes necessários para o apache e php'
+  apt:
+    name: ['apache2', 'php', 'libapache2-mod-php', 'php-mysql']
+    state: latest
+  become: yes
+
+- name: 'Copia novo arquivo de configuração do apache2'
+  template:
+    src: ./templates/wordpress.conf.j2
+    dest: /etc/apache2/sites-available/wordpress.conf
+  become: yes
+
+- name: 'Baixa o pacote wordpress'
+  get_url:
+    url: "{{ wordpress_url_download }}"
+    dest: "{{ wordpress_tar_gz_file_path }}"
+    mode: '0755'
+  become: yes
+
+- name: 'Descompacta os arquivos do wordpress'
+  unarchive:
+    src: "{{ wordpress_tar_gz_file_path }}"
+    dest: /var/www/
+    remote_src: yes
+    mode: '0755'
+  become: yes
+
+- name: 'Copia o arquivo de configuração do wordpress'
+  copy:
+    src: "{{ wordpress_installation_dir }}/wp-config-sample.php"
+    dest: "{{ wordpress_installation_dir }}/wp-config.php"
+    remote_src: yes
+  become: yes
+
+- name: 'Modifica o arquivo de configuração do wordpress'
+  replace:
+    path: "{{ wordpress_installation_dir }}/wp-config.php"
+    regexp: "{{ item.regex }}"
+    replace: "{{ item.value }}"
+  with_items:
+    - { regex: 'database_name_here', value: "{{ wordpress_db_name }}" }
+    - { regex: 'username_here', value: "{{ wordpress_user_name }}" }
+    - { regex: 'password_here', value: "{{ wordpress_user_password }}" }
+    - { regex: 'localhost',  value: "{{ wordpress_db_ip }}" }
+  become: yes
+
+- name: 'Desabilita a configuração padrão do apache2'
+  shell: 'a2dissite 000-default.conf'
+  become: yes
+
+- name: 'Habilita nova configuração para o apache2'
+  shell: 'a2ensite wordpress.conf'
+  become: yes
+  notify:
+    - 'Reinicia apache2'
+    

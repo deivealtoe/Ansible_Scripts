@@ -1,0 +1,45 @@
+---
+- name: 'Faz instalação dos pacotes necessários para o MySQL (MariaDB no caso)'
+  apt:
+    name: ['mariadb-server', 'mariadb-client', 'python3-pymysql']
+    state: latest
+  become: yes
+
+- name: 'Atualiza senha do usuário root no mariadb'
+  mysql_user:
+    name: root
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    host: 'localhost'
+    password: "{{ wordpress_db_root_password }}"
+    priv: "*.*:ALL,GRANT"
+    check_implicit_admin: true
+    state: present
+  become: yes
+
+- name: 'Cria o banco de dados no MariaDB'
+  mysql_db:
+    login_user: 'root'
+    login_password: 'superSecret03'
+    name: "{{ wordpress_db_name }}"
+    state: present
+  become: yes
+
+- name: 'Cria usuário no mariadb para usar no wordpress'
+  mysql_user:
+    login_user: 'root'
+    login_password: "{{ wordpress_user_password }}"
+    name: "{{ wordpress_user_name }}"
+    password: 'superSecret03'
+    priv: "{{ wordpress_db_name }}.*:ALL"
+    state: present
+    host: "{{ wordpress_app_ip }}"
+
+- name: 'Altera o arquivo 50-server.cnf alterando a linha bind-address'
+  lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    backrefs: yes
+    regexp: '^bind-address'
+    line: 'bind-address            = 0.0.0.0'
+    state: present
+  notify: 'Reinicia MariaDB'
+  become: yes
